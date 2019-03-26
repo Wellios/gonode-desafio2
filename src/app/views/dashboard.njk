@@ -1,0 +1,48 @@
+{% extends "_layouts/default.njk"%}
+
+{% block body%}
+  <div class="content">
+    <h1 class="name">Olá, {{ user.name }}</h1>
+    <p>Você já pode fazer alguns agendamentos</p>
+
+    <ul class="providers">
+      {% if user.provider == false %}
+        {% for provider in providers %}
+          <li class="provider">
+            <div>
+              <img src="/files/{{ provider.avatar }}">
+              <strong>{{ provider.name }}</strong>
+            </div>
+            <a href="/app/appointments/new/{{provider.id}}">+</a>
+          </li>
+        {% endfor %}
+      {%endif%}
+      {%if user.provider == true %}
+        <input class="flatpickr" placeholder="escolha a data">
+        <h2 class="day">Hoje</h2>
+        {% for appointment in appointments %}
+          <li class="provider">
+            <div>
+              <img src="/files/{{ appointment.user.avatar }}">
+              <h4 class="name">{{ appointment.user.name }} </h4> <strong>{{ appointment.date | date("HH:mm") }}</strong>
+            </div>
+          </li>
+        {% endfor %}
+        <ul id="appointments"></ul>
+      {%endif%}
+    </ul>
+    <a class="logout" href="/app/logout">Sair</a>
+  </div>
+  <script>
+    flatpickr('.flatpickr', {
+      dateFormat: 'd/m/Y',
+      onChange: function (date){
+        fetch(`/app/schedule/${date[0].getTime()}`).then(function(response){
+          response.text().then(function(html){
+            document.getElementById('appointments').innerHTML = html
+          })
+        })
+      }
+    })
+  </script>
+{% endblock%}

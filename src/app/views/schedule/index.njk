@@ -1,0 +1,13 @@
+{% if( appointments != "") %}
+  <li class="day" >
+    <h2>{{ appointments[0].date | date("D/MM/Y")}}</h2>
+  </li>
+{% endif %}
+{% for appointment in appointments %}
+  <li class="provider">
+    <div>
+      <img src="/files/{{ appointment.user.avatar }}">
+      <h4 class="name">{{ appointment.user.name }} </h4> <strong>{{ appointment.date | date("HH:mm") }}</strong>
+    </div>
+  </li>
+{% endfor %}
